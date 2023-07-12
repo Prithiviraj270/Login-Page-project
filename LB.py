@@ -1,0 +1,70 @@
+import tkinter as tk
+from tkinter import messagebox
+import pymysql
+def nr():
+    r = tk.Tk()
+    r.geometry("500x500")
+    r.config(highlightthickness=7, background="White", highlightbackground="black")
+    r.title("SIGN UP PAGE")
+    c = tk.Canvas(r, width=500, height=400, highlightbackground="black", highlightthickness=6, background="white")
+    c.place(x=550, y=100)
+    n = tk.Label(c, text="Name", font=("Times", 18, "bold"), fg="black", bg="white")
+    n.place(x=20, y=40)
+    ne = tk.Entry(c, highlightcolor="white", highlightbackground="black", relief="solid", font=("Aerial", 16))
+    ne.place(x=240, y=40)
+    un = tk.Label(c, text="User Name", font=("Times", 18, "bold"), fg="black", bg="white")
+    un.place(x=20, y=80)
+    usn = tk.Entry(c, highlightcolor="white", highlightbackground="black", relief="solid", font=("Aerial", 14))
+    usn.place(x=240, y=80)
+    mi = tk.Label(c, text="Mail Id", font=("Times", 18, "bold"), fg="black", bg="white")
+    mi.place(x=20, y=120)
+    mai = tk.Entry(c, highlightcolor="white", highlightbackground="black", relief="solid", font=("Aerial", 14))
+    mai.place(x=240, y=120)
+    p = tk.Label(c, text="Password", font=("Times", 18, "bold"), fg="black", bg="white")
+    p.place(x=20, y=160)
+    var = tk.IntVar()
+    def sho():
+        if var.get()==1:
+            pa.config(show="")
+
+        elif var.get()==0:
+         pa.config(show="*")
+    ch=tk.Checkbutton(c,text="Show Password",font=("times",18,"italic"),variable=var,onvalue=1,bg="white",offvalue=0,command=sho)
+    ch.place(x=240,y=190)
+    pa = tk.Entry(c,highlightcolor="white",highlightbackground="black",relief="solid",font=("Aerial",14),show="*")
+    pa.place(x=240,y=160)
+    cp = tk.Label(c,text="Confirm Password",font=("Times",18,"bold"),fg="black",bg="white")
+    cp.place(x=20,y=240)
+    cip = tk.Entry(c,highlightcolor="white",highlightbackground="black",relief="solid",font=("Aerial",14))
+    cip.place(x=240,y=240)
+    def inst():
+        if pa.get()==cip.get():
+            Name = ne.get()
+            Uname = usn.get()
+            MailID = mai.get()
+            Password = pa.get()
+            CPassword = cip.get()
+            mys = pymysql.connect(host="localhost", user="root", password="root", database="records")
+            myc = mys.cursor()
+            sq = "Insert into user(Name,Uname,MailID,Password,CPassword)values(%s,%s,%s,%s,%s)"
+            value = (Name, Uname, MailID, Password, CPassword)
+            myc.execute(sq, value)
+            mys.commit()
+            mys.close()
+            messagebox.showinfo("Records", f"{Uname} is Record Created!!")
+            ne.delete(0, tk.END)
+            usn.delete(0, tk.END)
+            mai.delete(0, tk.END)
+            pa.delete(0, tk.END)
+            cip.delete(0, tk.END)
+            ne.focus_set()
+        else:
+            messagebox.showerror("Register","Password Not Matched")
+            pa.delete(0,tk.END)
+            cip.delete(0,tk.END)
+            pa.focus_set()
+
+    b = tk.Button(c, text="SIGN UP", font=("Times", 16, "bold"), fg="black", bg="cyan", command=inst)
+    b.place(x=200, y=300)
+    r.mainloop()
+nr()
